@@ -33,38 +33,45 @@ public:
 
 	void PushBack(Elem Value)
 	{
-		if (!Head)
+		Node* NewNode = new Node;
+		NewNode->Value = Value;
+		NewNode->Next = nullptr;
+		NewNode->Prev = nullptr;
+
+		if (NewNode == nullptr)
 		{
-			Node* Tail = new Node;
-			Head = Tail;
-			NodeCount++;
-		}
-		else
-		{
-			Node* NewTail = new Node;
-			Tail->Next = NewTail;
-			NewTail->Prev = Tail;
-			Tail = NewTail;
-			NodeCount++;
+			NewNode->Next = Head;
+			Head->Prev = NewNode;
+			Head = NewNode;
 		}
 	}
 
 	void PushFront(Elem Value)
 	{
-		if (!Tail)
+		Node* NewNode = new Node;
+		NewNode->Value = Value;
+		NewNode->Next = nullptr;
+		NewNode->Prev = nullptr;
+		if (NewNode == nullptr)
 		{
-			Node* Head = new Node;
-			Tail = Head;
-			NodeCount++;
+			Tail->Next = NewNode;
+			NewNode->Prev = Tail;
+			Tail = NewNode;
 		}
-		else
-		{
-			Node* NewHead = new Node;
-			NewHead->Next = Head;
-			Head->Prev = NewHead;
-			Head = NewHead;
-			NodeCount++;
-		}
+// 		if (!Tail)
+// 		{
+// 			Node* Head = new Node;
+// 			Tail = Head;
+// 			NodeCount++;
+// 		}
+// 		else
+// 		{
+// 			Node* NewHead = new Node;
+// 			NewHead->Next = Head;
+// 			Head->Prev = NewHead;
+// 			Head = NewHead;
+// 			NodeCount++;
+// 		}
 
 	}
 
@@ -145,21 +152,27 @@ int main()
 
 	DoublyLinkedList List;
 
+	
+// 	List.Insert("2", 1);
+// 	std::cout << "Insert 2" << std::endl;
+ 	List.PushFront("9");
+ 	std::cout << "Push front 9:" << std::endl;
+ 	List.PushBack("5");
+ 	std::cout << "Push back 5: " << std::endl;
+ 	List.PushBack("10");
+ 	std::cout << "Push back 10: " << std::endl;
+
 	List.Size();
-	List.PushBack("5");
-	std::cout << "Push back 5: " << std::endl;
-	List.PushBack("10");
-	std::cout << "Push back 10: " << std::endl;
-	List.PushBack("20");
-	std::cout << "Push back 20: " << std::endl;
-	List.Insert("5", List.Size());
-	List.PushBack("200");
-	std::cout << "Push back 200: " << std::endl;
-	List.Delete(List.Size() - 2);
-	List.PushBack("15");
-	std::cout << "Push back 15: " << std::endl;
-	List.PushBack("25");
-	std::cout << "Push back 25: " << std::endl;
+// 	List.PushBack("20");
+// 	std::cout << "Push back 20: " << std::endl;
+// 	List.Insert("5", List.Size());
+// 	List.PushBack("200");
+// 	std::cout << "Push back 200: " << std::endl;
+// 	List.Delete(List.Size() - 2);
+// 	List.PushBack("15");
+// 	std::cout << "Push back 15: " << std::endl;
+// 	List.PushBack("25");
+// 	std::cout << "Push back 25: " << std::endl;
 // 	List.Delete(List.Size());
 // 	List.Delete(List.Size() - 1);
 // 	List.PushFront(30);
