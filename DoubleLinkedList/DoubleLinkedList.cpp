@@ -33,7 +33,6 @@ public:
 
 	void PushBack(Elem Value)
 	{
-
 		if (!Head)
 		{
 			Node* Tail = new Node;
@@ -44,8 +43,8 @@ public:
 		{
 			Node* NewTail = new Node;
 			Tail->Next = NewTail;
-			Tail = NewTail;
 			NewTail->Prev = Tail;
+			Tail = NewTail;
 			NodeCount++;
 		}
 	}
@@ -71,88 +70,67 @@ public:
 
 	void Insert(Elem AddValue, int idx)
 	{
-		Node* PrevNode{ Head };
-		int NodeCount{};
-		while (NodeCount < (idx - 1))
+		if (idx == 0)
 		{
-			PrevNode = PrevNode->Next;
+			PushFront(AddValue);
+		}
+		else if (idx == NodeCount)
+		{
+			PushBack(AddValue);
+		}
+		else
+		{
+			Node* PrevNode = Head;
+			int NodeCount = 0;
+			while (NodeCount < (idx - 1))
+			{
+				PrevNode = PrevNode->Next;
+				NodeCount++;
+			}
+			Node* NextNode = PrevNode;
+			while (NodeCount < idx)
+			{
+				NextNode = NextNode->Next;
+				NodeCount++;
+			}
+			Node* NewNode = new Node;
+			NewNode->Prev = PrevNode;
+			NewNode->Next = NextNode;
 			NodeCount++;
 		}
-		Node* NextNode{ PrevNode };
-		while (NodeCount < idx)
-		{
-			NextNode = NextNode->Next;
-			NodeCount++;
-		}
-		Node* NewNode = new Node;
-		NewNode->Prev = PrevNode;
-		NewNode->Next = NextNode;
-		NodeCount++;
 	}
 
 	void Delete(int idx)
 	{
-		if (idx == 0)
+		if (NodeCount == 0)
 		{
-			Node* Temp{ Head };
-			Head = Head->Next;
-			Head->Prev = nullptr;
-			NodeCount--;
-			delete Temp;
-		}
-		else if (idx == NodeCount)
-		{
-			Node* Temp{ Tail };
-			Tail = Tail->Prev;
-			Tail->Next = nullptr;
-			delete Temp;
-			NodeCount--;
-		}
-		else if (idx == (NodeCount - 1))
-		{
-			Node* PrevNode{ Head };
-			int Count{};
-			while (Count < (idx-2))
-			{
-				PrevNode = PrevNode->Next;
-				Count++;
-			}
-			Node* Temp{ PrevNode };
-			while (Count < idx)
-			{
-				Temp = Temp->Next;
-				Count++;
-			}
-			PrevNode->Next = Tail;
-			Tail->Prev = PrevNode;
-			delete Temp;
-			NodeCount--;
+			return;
 		}
 		else
 		{
-			Node* PrevNode{ Head };
-			int Count{};
-			while (Count < (idx - 1))
+			Node* NodeDelete = Head;
+			for (int i=0; i < idx; i++)
 			{
-				PrevNode = PrevNode->Next;
-				Count++;
+				NodeDelete = NodeDelete->Next;
 			}
-			Node* Temp{ PrevNode };
-			while (Count < idx)
+			if (NodeDelete->Prev) 
+			{ 
+				NodeDelete->Prev->Next = NodeDelete->Next;
+			}
+			if (NodeDelete->Next)
 			{
-				Temp = Temp->Next;
-				Count++;
+				NodeDelete->Next->Prev = NodeDelete->Prev;
 			}
-			Node* NextNode{ Temp };
-			while (Count < (idx+1))
+			if (Head == NodeDelete)
 			{
-				NextNode = NextNode->Next;
-				Count++;
+				Head = NodeDelete->Next;
 			}
-			PrevNode->Next = NextNode;
-			NextNode->Prev = PrevNode;
-			delete Temp;
+			if (Tail == NodeDelete)
+			{
+				Tail = NodeDelete->Prev;
+			}
 			NodeCount--;
+			delete NodeDelete;
 		}
 	}
 
@@ -168,36 +146,36 @@ int main()
 	DoublyLinkedList List;
 
 	List.Size();
-	List.PushBack(5);
+	List.PushBack("5");
 	std::cout << "Push back 5: " << std::endl;
-	List.PushBack(10);
+	List.PushBack("10");
 	std::cout << "Push back 10: " << std::endl;
-	List.PushBack(20);
+	List.PushBack("20");
 	std::cout << "Push back 20: " << std::endl;
-	List.Insert(100, List.Size());
-	List.PushBack(200);
+	List.Insert("5", List.Size());
+	List.PushBack("200");
 	std::cout << "Push back 200: " << std::endl;
 	List.Delete(List.Size() - 2);
-	List.PushBack(15);
+	List.PushBack("15");
 	std::cout << "Push back 15: " << std::endl;
-	List.PushBack(25);
+	List.PushBack("25");
 	std::cout << "Push back 25: " << std::endl;
-	List.Delete(List.Size());
-	List.Delete(List.Size() - 1);
-	List.PushFront(30);
-	std::cout << "Push front: " << std::endl;
-	List.PushFront(35);
-	std::cout << "Push front: " << std::endl;
-	List.PushFront(40);
-	std::cout << "Push front: " << std::endl;
-	List.PushFront(45);
-	std::cout << "Push front: " << std::endl;
-	List.Insert(200, List.Size());
-	List.Delete(List.Size() - 1);
-	List.Delete(List.Size());
-
-	List.Insert(300, List.Size());
-	List.Insert(400, List.Size());
+// 	List.Delete(List.Size());
+// 	List.Delete(List.Size() - 1);
+// 	List.PushFront(30);
+// 	std::cout << "Push front: " << std::endl;
+// 	List.PushFront(35);
+// 	std::cout << "Push front: " << std::endl;
+// 	List.PushFront(40);
+// 	std::cout << "Push front: " << std::endl;
+// 	List.PushFront(45);
+// 	std::cout << "Push front: " << std::endl;
+// 	List.Insert(200, List.Size());
+// 	List.Delete(List.Size() - 1);
+// 	List.Delete(List.Size());
+// 
+// 	List.Insert(300, List.Size());
+// 	List.Insert(400, List.Size());
 
 	return 0;
 }
