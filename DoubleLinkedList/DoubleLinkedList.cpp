@@ -1,156 +1,221 @@
 #include <iostream>
+#include "DoubleLinkedList.h"
 #include <string>
 
-typedef std::string Elem;
 
-struct Node { Node *Next; Node *Prev; Elem Value; };
-
-class DoublyLinkedList
+UDoublyLinkedList::UDoublyLinkedList()
 {
-public:
+	Head = Tail = nullptr;
+	Count = 0;
+}
 
-	DoublyLinkedList()
+UDoublyLinkedList::~UDoublyLinkedList()
+{
+	while (Head)
+	{
+		FNode* Temp = Head;
+		Head = Head->Next;
+		delete Temp;
+	}
+}
+
+UDoublyLinkedList::UDoublyLinkedList(const UDoublyLinkedList& other)
+{
+	FNode* NewNode = new FNode; 
+	FNode* Current; 
+
+	if (other.Head == 0) 
 	{
 		Head = nullptr;
-		Tail = nullptr;
+		Count = 0;
 	}
-
-	~DoublyLinkedList()
+	else
 	{
-		while (Head)
+		Current = other.Head;
+		Count = other.Count;
+		Head->Data = Current->Data; 
+		Head->Next = Current->Next; 
+		Head->Tail = Current->Tail;
+		Tail = Head; 
+		Current = Current->Next;
+		while (Current != nullptr)
 		{
-			Node* Temp = Head;
-			Head = Head->Next;
-			delete Temp;
-			NodeCount--;
-		}
-	}
-
-	int Size() const
-	{
-		return NodeCount;
-	}
-
-	void PushBack(Elem Value)
-	{
-		Node* NewNode = new Node;
-		NewNode->Value = Value;
-		NewNode->Next = nullptr;
-		NewNode->Prev = nullptr;
-
-		if (NewNode == nullptr)
-		{
-			NewNode->Next = Head;
-			Head->Prev = NewNode;
-			Head = NewNode;
-		}
-	}
-
-	void PushFront(Elem Value)
-	{
-		Node* NewNode = new Node;
-		NewNode->Value = Value;
-		NewNode->Next = nullptr;
-		NewNode->Prev = nullptr;
-		if (NewNode == nullptr)
-		{
+			NewNode = new FNode; 
+			NewNode->Data = Current->Data;
+			NewNode->Next = Current->Next;
+			NewNode->Prev = Current->Prev;
 			Tail->Next = NewNode;
-			NewNode->Prev = Tail;
 			Tail = NewNode;
+			Current = Current->Next;
 		}
-// 		if (!Tail)
-// 		{
-// 			Node* Head = new Node;
-// 			Tail = Head;
-// 			NodeCount++;
-// 		}
-// 		else
-// 		{
-// 			Node* NewHead = new Node;
-// 			NewHead->Next = Head;
-// 			Head->Prev = NewHead;
-// 			Head = NewHead;
-// 			NodeCount++;
-// 		}
-
 	}
+}
 
-	void Insert(Elem AddValue, int idx)
+UDoublyLinkedList& UDoublyLinkedList::operator=(const UDoublyLinkedList& other)
+{
+	if (this != &other.Head) //avoid self-copy
 	{
-		if (idx == 0)
+		UDoublyLinkedList(other);
+	}
+	return *this;
+}
+
+bool UDoublyLinkedList::IsEmpty() const
+{
+	if (Count <= 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+UDoublyLinkedList::UIterator Begin() const
+{
+
+}
+
+UDoublyLinkedList::UIterator End() const
+{
+
+}
+
+size_t UDoublyLinkedList::Count() const
+{
+	
+}
+
+void UDoublyLinkedList::InsertBack(const Elem& Value)
+{
+	FNode* NewNode = new FNode;
+	NewNode->Value = Value;
+	NewNode->Next = nullptr;
+	NewNode->Prev = nullptr;
+
+	if (NewNode == nullptr)
+	{
+		NewNode->Next = Head;
+		Head->Prev = NewNode;
+		Head = NewNode;
+	}
+}
+
+void UDoublyLinkedList::InsertFront(const Elem& Value)
+{
+	FNode* NewNode = new FNode;
+	NewNode->Value = Value;
+	NewNode->Next = nullptr;
+	NewNode->Prev = nullptr;
+	if (NewNode == nullptr)
+	{
+		Tail->Next = NewNode;
+		NewNode->Prev = Tail;
+		Tail = NewNode;
+	}
+}
+
+void UDoublyLinkedList::Insert(const UIterator& idx, const Elem& Value)
+{
+	if (idx == 0)
+	{
+		InsertFront(Value);
+	}
+	else if (idx == Count)
+	{
+		InsertBack(Value);
+	}
+	else
+	{
+		FNode* PrevNode = Head;
+		int NodeCount = 0;
+		while (NodeCount < (idx - 1))
 		{
-			PushFront(AddValue);
-		}
-		else if (idx == NodeCount)
-		{
-			PushBack(AddValue);
-		}
-		else
-		{
-			Node* PrevNode = Head;
-			int NodeCount = 0;
-			while (NodeCount < (idx - 1))
-			{
-				PrevNode = PrevNode->Next;
-				NodeCount++;
-			}
-			Node* NextNode = PrevNode;
-			while (NodeCount < idx)
-			{
-				NextNode = NextNode->Next;
-				NodeCount++;
-			}
-			Node* NewNode = new Node;
-			NewNode->Prev = PrevNode;
-			NewNode->Next = NextNode;
+			PrevNode = PrevNode->Next;
 			NodeCount++;
 		}
+		FNode* NextNode = PrevNode;
+		while (NodeCount < idx)
+		{
+			NextNode = NextNode->Next;
+			NodeCount++;
+		}
+		FNode* NewNode = new FNode;
+		NewNode->Prev = PrevNode;
+		NewNode->Next = NextNode;
+		NodeCount++;
 	}
+}
 
-	void Delete(int idx)
+void UDoublyLinkedList::EraseFront()
+{
+	if (!IsEmpty())
 	{
-		if (NodeCount == 0)
+		FNode* Temp = Head;
+		if (Head == Tail)
 		{
-			return;
+			Tail = nullptr;
 		}
-		else
-		{
-			Node* NodeDelete = Head;
-			for (int i=0; i < idx; i++)
-			{
-				NodeDelete = NodeDelete->Next;
-			}
-			if (NodeDelete->Prev) 
-			{ 
-				NodeDelete->Prev->Next = NodeDelete->Next;
-			}
-			if (NodeDelete->Next)
-			{
-				NodeDelete->Next->Prev = NodeDelete->Prev;
-			}
-			if (Head == NodeDelete)
-			{
-				Head = NodeDelete->Next;
-			}
-			if (Tail == NodeDelete)
-			{
-				Tail = NodeDelete->Prev;
-			}
-			NodeCount--;
-			delete NodeDelete;
-		}
+		Elem DelValue = Temp->Data;
+		Head = Head->Next;
+		delete Temp;
+		Count--;
 	}
+}
 
-private:
-	Node* Head;
-	Node* Tail;
-	int NodeCount{};
-};
+void UDoublyLinkedList::EraseEnd()
+{
+	if (!IsEmpty())
+	{
+		FNode* Temp = Tail;
+		if (Head == Tail)
+		{
+			Head = nullptr;
+		}
+		Elem DelValue = Temp->Data;
+		Tail->Next = nullptr;
+		Tail = Tail->Prev;
+		delete Temp;
+		Count--;
+	}
+}
+
+void UDoublyLinkedList::Erase(const UIterator& idx)
+{
+	if (Count == 0)
+	{
+		return;
+	}
+	else
+	{
+		FNode* NodeDelete = Head;
+		for (int i=0; i < idx; i++)
+		{
+			NodeDelete = NodeDelete->Next;
+		}
+		if (NodeDelete->Prev) 
+		{ 
+			NodeDelete->Prev->Next = NodeDelete->Next;
+		}
+		if (NodeDelete->Next)
+		{
+			NodeDelete->Next->Prev = NodeDelete->Prev;
+		}
+		if (Head == NodeDelete)
+		{
+			Head = NodeDelete->Next;
+		}
+		if (Tail == NodeDelete)
+		{
+			Tail = NodeDelete->Prev;
+		}
+		Count--;
+		delete NodeDelete;
+	}
+}
 
 int main() 
 {
 
-	DoublyLinkedList List;
+	UDoublyLinkedList List;
 
 	
 // 	List.Insert("2", 1);
